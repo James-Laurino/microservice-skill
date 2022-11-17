@@ -1,5 +1,6 @@
 package com.fotovaCreation.productservice;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,33 +8,44 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple3;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @RestController
+@Slf4j
 public class ProductController
 {
     List<ProductInfo> productInfoList = new ArrayList<ProductInfo>();
 
-    @Autowired
-    private RestTemplate restTemplate;
+    public WebClient webClient = WebClient.create();
 
     @GetMapping("/product/details/{productId}")
-    public Product getProduct(@PathVariable int productId)
+    public Mono<Product> getProduct(@PathVariable int productId)
     {
+        log.info("je rentre dans le get Product controller");
         populateProductInfo();
-        Price price = restTemplate.getForObject("http://localhost:8002/price/" + productId, Price.class);
-        Inventory inventory = restTemplate.getForObject("http://localhost:8003/inventory/" + productId, Inventory.class);
 
+        Mono<ProductInfo> productInfo = Mono.just(productInfoList.get(productId));
+        Mono<Price> price = webClient.get().uri("http://localhost:8002/price/{productId}", productId).retrieve().bodyToMono(Price.class);
+        Mono<Inventory> inventory = webClient.get().uri("http://localhost:8003/inventory/{productId}", productId).retrieve().bodyToMono(Inventory.class);
 
-        Product product = new Product(productInfoList.get(productId).getProductId(),
-                productInfoList.get(productId).getProductDesc(), productInfoList.get(productId).getProductName()
-                , price.getOriginalPrice(),inventory.getInStock());
+        log.info("je suis dans le controller et je suis afficher même si la request n'est pas finie ");
+//        return Mono.zip(productInfo,price,inventory).map(this::buildProduct);
+        return Mono.zip(productInfo,price,inventory).map(tuple ->
+            new Product(tuple.getT1().getProductId(), tuple.getT1().getProductName(), tuple.getT1().getProductDesc()
+                    , tuple.getT2().getDiscountedPrice(), tuple.getT3().getInStock())
+        );
+    }
 
-
-        return product;
+    public Product buildProduct(Tuple3<ProductInfo,Price,Inventory> tuple)
+    {
+        return new Product(tuple.getT1().getProductId(), tuple.getT1().getProductName(), tuple.getT1().getProductDesc()
+        , tuple.getT2().getDiscountedPrice(),tuple.getT3().getInStock());
     }
 
     private void populateProductInfo()

@@ -3,6 +3,7 @@ package com.fotovaCreation.pricingservice;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,11 +15,11 @@ public class PriceController
     List<Price> priceList= new ArrayList<Price>();
 
     @GetMapping("/price/{productId}")
-    public Price getPrice(@PathVariable Long productId)
+    public Mono<Price> getPrice(@PathVariable Long productId)
     {
         populatePriceList();
-        Price p = getPriceOfProduct(productId);
-        return p;
+        return Mono.just(getPriceOfProduct(productId));
+
     }
 
     private Price getPriceOfProduct(Long id)

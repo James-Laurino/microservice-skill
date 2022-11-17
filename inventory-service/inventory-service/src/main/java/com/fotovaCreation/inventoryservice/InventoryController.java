@@ -3,8 +3,10 @@ package com.fotovaCreation.inventoryservice;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -13,11 +15,11 @@ public class InventoryController
     List<Inventory> inventoryList = new ArrayList<Inventory>();
 
     @GetMapping("/inventory/{productId}")
-    public Inventory getProductInventory(@PathVariable Long productId)
+    public Mono<Inventory> getProductInventory(@PathVariable Long productId)
     {
         populateInventoryList();
-        Inventory i = getInventoryById(productId);
-        return i;
+        return Mono.just(inventoryList.get(Math.toIntExact(productId)));
+
     }
 
     public Inventory getInventoryById(Long id)
@@ -39,5 +41,7 @@ public class InventoryController
         Inventory i2 = new Inventory(2L,2L,true);
         Inventory i3 = new Inventory(3L,3L,false);
         Inventory i4 = new Inventory(4L,4L,true);
+
+        inventoryList.addAll(Arrays.asList(i1,i2,i3,i4));
     }
 }
