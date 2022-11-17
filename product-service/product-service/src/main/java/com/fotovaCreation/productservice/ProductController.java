@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple3;
 
@@ -24,11 +25,15 @@ public class ProductController
 
     public WebClient webClient = WebClient.create();
 
+    public ProductController()
+    {
+        populateProductInfo();
+    }
+
     @GetMapping("/product/details/{productId}")
     public Mono<Product> getProduct(@PathVariable int productId)
     {
         log.info("je rentre dans le get Product controller");
-        populateProductInfo();
 
         Mono<ProductInfo> productInfo = Mono.just(productInfoList.get(productId));
         Mono<Price> price = webClient.get().uri("http://localhost:8002/price/{productId}", productId).retrieve().bodyToMono(Price.class);
@@ -40,6 +45,27 @@ public class ProductController
             new Product(tuple.getT1().getProductId(), tuple.getT1().getProductName(), tuple.getT1().getProductDesc()
                     , tuple.getT2().getDiscountedPrice(), tuple.getT3().getInStock())
         );
+    }
+
+    @GetMapping("/product")
+    public Flux<Product> getAllProduct()
+    {
+
+        return Flux.fromStream(productInfoList.stream()).flatMap(productInfo ->
+        {
+            Mono<Price> price = webClient.get()
+                    .uri("http://localhost:8002/price/{productId}", productInfo.getProductId())
+                    .retrieve().bodyToMono(Price.class);
+
+            Mono<Inventory> inventory = webClient.get()
+                    .uri("http://localhost:8003/inventory/{productId}", productInfo.getProductId())
+                    .retrieve().bodyToMono(Inventory.class);
+
+            return Mono.zip(price,inventory).map(tuple ->
+                    new Product(productInfo.getProductId(), productInfo.getProductName(), productInfo.getProductDesc(),
+                        tuple.getT1().getDiscountedPrice(),tuple.getT2().getInStock()));
+
+        });
     }
 
     public Product buildProduct(Tuple3<ProductInfo,Price,Inventory> tuple)
