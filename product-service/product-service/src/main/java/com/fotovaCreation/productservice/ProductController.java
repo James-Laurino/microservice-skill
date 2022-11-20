@@ -17,19 +17,28 @@ public class ProductController
 {
     List<ProductInfo> productInfoList = new ArrayList<ProductInfo>();
 
+   // @Autowired
+   // private RestTemplate restTemplate;
+
     @Autowired
-    private RestTemplate restTemplate;
+    private PriceClient priceClient;
+
+    @Autowired
+    private  InventoryClient inventoryClient;
 
     @GetMapping("/product/details/{productId}")
-    public Product getProduct(@PathVariable int productId)
+    public Product getProduct(@PathVariable Long productId)
     {
         populateProductInfo();
-        Price price = restTemplate.getForObject("http://localhost:8002/price/" + productId, Price.class);
-        Inventory inventory = restTemplate.getForObject("http://localhost:8003/inventory/" + productId, Inventory.class);
+        Price price = priceClient.getPrice(productId);
 
+        //Price price = restTemplate.getForObject("http://localhost:8002/price/" + productId, Price.class);
 
-        Product product = new Product(productInfoList.get(productId).getProductId(),
-                productInfoList.get(productId).getProductDesc(), productInfoList.get(productId).getProductName()
+        //Inventory inventory = restTemplate.getForObject("http://localhost:8003/inventory/" + productId, Inventory.class);
+        Inventory inventory = inventoryClient.getProductInventory(productId);
+
+        Product product = new Product(productInfoList.get(Math.toIntExact(productId)).getProductId(),
+                productInfoList.get(Math.toIntExact(productId)).getProductDesc(), productInfoList.get(Math.toIntExact(productId)).getProductName()
                 , price.getOriginalPrice(),inventory.getInStock());
 
 
