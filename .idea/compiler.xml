@@ -2,16 +2,19 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="product-service" />
-        <module name="pricing-service" />
         <module name="inventory-service" />
+        <module name="Eureka-server" />
+        <module name="pricing-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="Eureka-server" target="17" />
       <module name="inventory-service" target="17" />
       <module name="pricing-service" target="17" />
       <module name="product-service" target="17" />
@@ -19,6 +22,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Eureka-server" options="-parameters" />
       <module name="inventory-service" options="-parameters" />
       <module name="pricing-service" options="-parameters" />
       <module name="product-service" options="-parameters" />

@@ -1,0 +1,12 @@
+1) Se mettre dans Eureka server
+3) Lancer 3 instance de ce dernier avec les application.properties différente  :
+
+mvn spring-boot:run -Dspring-boot.run.arguments=--spring.config.location=classpath:/application-local.properties
+
+4)Windows/system32/drivers/etc
+    host
+    ----
+
+    - 127.0.0.1     eureka-BE
+    - 127.0.0.1     eureka-FR
+    - 127.0.0.1     eureka-UK

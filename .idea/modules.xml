@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Eureka-server/Eureka-server/Eureka-server.iml" filepath="$PROJECT_DIR$/Eureka-server/Eureka-server/Eureka-server.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/Microservices-skill-share.iml" filepath="$PROJECT_DIR$/.idea/Microservices-skill-share.iml" />
       <module fileurl="file://$PROJECT_DIR$/inventory-service/inventory-service/inventory-service.iml" filepath="$PROJECT_DIR$/inventory-service/inventory-service/inventory-service.iml" />
       <module fileurl="file://$PROJECT_DIR$/pricing-service/pricing-service/pricing-service.iml" filepath="$PROJECT_DIR$/pricing-service/pricing-service/pricing-service.iml" />
