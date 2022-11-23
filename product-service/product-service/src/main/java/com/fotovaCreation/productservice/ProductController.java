@@ -26,6 +26,13 @@ public class ProductController
     @Autowired
     private  InventoryClient inventoryClient;
 
+    @GetMapping("/getPort")
+    public String getPortInfo()
+    {
+        String portINventory = inventoryClient.getPortInfo();
+        return  portINventory;
+    }
+
     @GetMapping("/product/details/{productId}")
     public Product getProduct(@PathVariable Long productId)
     {

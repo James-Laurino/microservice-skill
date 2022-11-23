@@ -1,5 +1,7 @@
 package com.fotovaCreation.inventoryservice;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +14,16 @@ import java.util.List;
 public class InventoryController
 {
     List<Inventory> inventoryList = new ArrayList<Inventory>();
+
+    @Value("${server.port}")
+    String port;
+
+    @GetMapping("/inventory/getPort")
+    public String getPortInfo()
+    {
+        return port;
+    }
+
 
     @GetMapping("/inventory/{productId}")
     public Inventory getProductInventory(@PathVariable Long productId)

@@ -10,4 +10,7 @@ public interface InventoryClient
 {
     @GetMapping("/inventory/{productId}")
     public Inventory getProductInventory(@PathVariable("productId") Long productId);
+
+    @GetMapping("/inventory/getPort")
+    public String getPortInfo();
 }

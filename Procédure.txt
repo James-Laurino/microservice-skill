@@ -10,3 +10,8 @@ mvn spring-boot:run -Dspring-boot.run.arguments=--spring.config.location=classpa
     - 127.0.0.1     eureka-BE
     - 127.0.0.1     eureka-FR
     - 127.0.0.1     eureka-UK
+
+Check Load balancing :
+
+Lancer une instance de inventory service en cli avec un port différent  :
+    mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=9006
