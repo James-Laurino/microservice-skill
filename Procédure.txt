@@ -15,3 +15,10 @@ Check Load balancing :
 
 Lancer une instance de inventory service en cli avec un port différent  :
     mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=9006
+
+
+Actuator in gateway :
+---------------------
+
+Permet de montrer tous les endpoint disponibles sur la getaway
+soit toutes les url que la gateway peut rediriger
