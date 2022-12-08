@@ -9,10 +9,12 @@ import org.springframework.context.annotation.Configuration;
 public class SpringCloudConfig
 {
     @Bean
-    public RouteLocator buildRouteLocator(RouteLocatorBuilder builder)
+    public RouteLocator buildRouteLocator(RouteLocatorBuilder builder, MyCustomFilter myCustomFilter)
     {
         return builder.routes().
-                route(r -> r.path("/price/**").uri("http://localhost:8002"))
+                route(r -> r.path("/price/**")
+                        .filters(f -> f.filter(myCustomFilter.apply(new MyCustomFilter.Config())))
+                        .uri("http://localhost:8002"))
                 .route(r -> r.path("/inventory/**").uri("http://localhost:8003")).build();
     }
 }
